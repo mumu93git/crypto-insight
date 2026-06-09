@@ -220,6 +220,7 @@ def generate_index(articles):
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="_UJqwOqD7KQXT5DvneoA-kQzpIE4isR8apvX6sOF1Vo" />
     <title>CryptoInsight - 加密货币专业分析</title>
     <meta name="description" content="CryptoInsight提供专业的加密货币分析、交易策略和市场洞察">
     <style>
