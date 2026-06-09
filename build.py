@@ -122,6 +122,7 @@ def generate_article(keyword, index):
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="_UJqwOqD7KQXT5DvneoA-kQzpIE4isR8apvX6sOF1Vo" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{title} - 专业的加密货币分析和交易指南">
     <meta name="keywords" content="{keyword},加密货币,比特币,交易,投资">
@@ -163,7 +164,7 @@ def generate_article(keyword, index):
     
     <div class="cta">
         <p>📡 想要实时交易信号？</p>
-        <a href="/signal-bot.html">了解 Hermes 智能交易信号服务 →</a>
+        <a href="/signal-bot.html">了解 Q系统 智能交易信号服务 →</a>
     </div>
     
     <div class="disclaimer">
