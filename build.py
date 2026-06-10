@@ -1,31 +1,24 @@
 """
 Hermes 内容工厂 - 自动生成SEO文章，赚广告费
-策略: 长尾关键词 → AI生成 → 部署 → AdSense → 被动收入
+策略: 长尾关键词 -> AI生成 -> 部署 -> AdSense -> 被动收入
 """
 import os
 import json
 import random
 from datetime import datetime
 
+# Google AdSense
+ADSENSE_CLIENT = "ca-pub-0000000000000000"
+ADSENSE_SLOT_IN_ARTICLE = "0000000000"
+
 ARTICLES_DIR = os.path.join(os.path.dirname(__file__), 'articles')
 
-# 高价值长尾关键词（低竞争、搜索量大）
 KEYWORDS = [
-    "比特币还会涨吗",
-    "以太坊2026价格预测",
-    "加密货币新手入门",
-    "币安合约交易教程",
-    "BTC技术分析",
-    "加密货币避税",
-    "DeFi挖矿教程",
-    "NFT怎么买",
-    "Solana生态项目",
-    "加密货币安全钱包推荐",
-    "网格交易策略",
-    "ETH gas费优化",
-    "加密货币空投攻略",
-    "Web3入门教程",
-    "比特币减半影响分析",
+    "比特币还会涨吗", "以太坊2026价格预测", "加密货币新手入门",
+    "币安合约交易教程", "BTC技术分析", "加密货币避税",
+    "DeFi挖矿教程", "NFT怎么买", "Solana生态项目",
+    "加密货币安全钱包推荐", "网格交易策略", "ETH gas费优化",
+    "加密货币空投攻略", "Web3入门教程", "比特币减半影响分析",
 ]
 
 TITLE_MAP = {
@@ -44,10 +37,9 @@ TITLE_MAP = {
     "加密货币空投攻略": "加密货币空投获取指南：识别优质项目，免费领取代币",
     "Web3入门教程": "Web3概念与应用：下一代互联网的入门指南",
     "比特币减半影响分析": "比特币减半对市场的影响：历史回测与2026年展望",
-    # auto_content补充关键词
     "比特币ETF最新消息": "比特币ETF最新进展：机构资金流入对价格的影响分析",
     "以太坊Layer2扩容方案": "以太坊Layer2扩容方案对比：Arbitrum vs Optimism vs zkSync",
-    "加密货币定投策略": "加密货币定投(DCA)策略：熊市建仓牛市收穫的最佳方式",
+    "加密货币定投策略": "加密货币定投(DCA)策略：熊市建仓牛市收获的最佳方式",
     "DePIN项目投资指南": "DePIN赛道深度分析：去中心化物理基础设施的投资机会",
     "AI概念币投资分析": "AI+区块链概念币全面分析：2026年哪些项目值得关注",
     "RWA赛道深度解析": "RWA(真实世界资产)代币化：万亿级市场的投资机会",
@@ -63,161 +55,17 @@ TITLE_MAP = {
     "EigenLayer生态项目": "EigenLayer生态全景：再质押赛道的主流项目盘点",
 }
 
-
-def get_all_article_files():
-    """获取所有文章文件及标题"""
-    articles = []
-    if not os.path.exists(ARTICLES_DIR):
-        return articles
-    for f in sorted(os.listdir(ARTICLES_DIR)):
-        if f.endswith('.html') and f.startswith('article-'):
-            # 从文件名提取keyword
-            parts = f.split('-', 2)
-            if len(parts) >= 3:
-                kw = os.path.splitext(parts[2])[0]
-                articles.append({'file': f, 'keyword': kw})
-    return articles
-
-
-def get_related_articles(current_file, count=5):
-    """随机选取相关文章（排除自身）"""
-    all_arts = get_all_article_files()
-    others = [a for a in all_arts if a['file'] != current_file]
-    random.shuffle(others)
-    return others[:count]
-
-
-def generate_article(keyword, index):
-    """生成一篇SEO优化的文章"""
-    now = datetime.now().strftime("%Y-%m-%d")
-    title = TITLE_MAP.get(keyword, f"{keyword} - 完整解析与指南 {now}")
-    filename = f"article-{index:03d}-{keyword.replace(' ', '-')}.html"
-
-    content_map = {
-        "比特币还会涨吗": [
-            "## 市场背景",
-            f"截至{now}，比特币(BTC)价格在经历市场周期波动后，正面临多重因素的交织影响。",
-            "",
-            "## 技术面分析",
-            "从技术指标来看，BTC的200日均线呈现上行趋势，MACD指标金叉信号已经出现。",
-            "RSI指标处于50-70区间，表明市场处于健康的中性偏多状态。",
-            "布林带收窄通常预示着大的价格变动即将到来。",
-            "",
-            "## 基本面驱动因素",
-            "1. **机构入场**: 更多传统金融机构正在通过ETF和现货产品进入加密市场",
-            "2. **减半效应**: 比特币减半事件后，供应量的减少对价格形成支撑",
-            "3. **监管明朗化**: 全球主要经济体的加密监管框架逐渐完善",
-            "",
-            "## 风险评估",
-            "尽管长期看涨因素充足，但短期内仍需关注：",
-            "- 宏观经济环境变化（利率政策）",
-            "- 地缘政治风险",
-            "- 交易所安全事件",
-            "",
-            "## 结论",
-            "基于技术面和基本面的综合分析，比特币中长期仍有上涨空间，但投资者应注意仓位管理和风险控制。",
-        ],
-        "比特币ETF最新消息": [
-            "## 比特币ETF最新进展",
-            f"截至{now}，比特币现货ETF市场持续壮大，管理资产规模(AUM)已突破新高。",
-            "",
-            "## 主要ETF产品对比",
-            "目前市场上主要的比特币ETF包括：",
-            "- **BlackRock iShares Bitcoin Trust (IBIT)**: 管理资产规模最大，日均交易量领先",
-            "- **Fidelity Wise Origin Bitcoin Fund (FBTC)**: 费用率最低的比特币ETF之一",
-            "- **Grayscale Bitcoin Trust (GBTC)**: 转型为ETF后资金流出压力缓解",
-            "- **ARK 21Shares Bitcoin ETF (ARKB)**: 年轻投资者偏好的选择",
-            "",
-            "## 机构资金流入对价格的影响",
-            "比特币ETF获批后，机构资金持续流入。研究显示，每净流入10亿美元，BTC价格平均上涨3-5%。",
-            "ETF带来的不仅是增量资金，更重要的是为传统投资者提供了合规、便捷的投资渠道。",
-            "",
-            "## 未来展望",
-            "随着更多养老金基金、捐赠基金和保险公司配置比特币ETF，加密资产的机构化进程将加速。",
-            "同时，以太坊ETF和其他加密资产ETF的推出将扩大市场深度。",
-        ],
-        "以太坊Layer2扩容方案": [
-            "## Layer2扩容方案概述",
-            f"以太坊Layer2解决方案是提升网络吞吐量、降低交易费用的关键技术。{now}的数据显示，Layer2生态锁仓量(TVL)持续创新高。",
-            "",
-            "## Arbitrum",
-            "Arbitrum是采用Optimistic Rollup技术的领先Layer2。优势：",
-            "- EVM完全兼容，开发者迁移成本低",
-            "- 生态丰富，头部DeFi协议均已部署",
-            "- TVL长期位居Layer2首位",
-            "",
-            "## Optimism",
-            "Optimism作为OP Stack的发起者，形成了超级链生态(Superchain)。",
-            "- OP Stack开源框架降低了构建L2的门槛",
-            "- Base、PGN等知名L2均基于OP Stack构建",
-            "- 原生代币OP用于治理和生态激励",
-            "",
-            "## zkSync",
-            "zkSync采用ZK-Rollup技术，代表Layer2的未来方向。",
-            "- 零知识证明技术确保安全性",
-            "- 提款无需等待期(对比Optimistic Rollup的7天)",
-            "- zkSync Era上线后生态快速增长",
-        ],
-    }
-
-    body = content_map.get(keyword, [
-        f"## {keyword}",
-        f"本文深入探讨{keyword}相关的关键信息，帮助读者全面了解这一主题。",
-        "",
-        "## 核心要点",
-        f"1. {keyword}的基础概念与运作机制",
-        f"2. 当前市场趋势与最新发展",
-        f"3. 实用操作指南与最佳实践",
-        f"4. 风险评估与注意事项",
-        "",
-        "## 详细分析",
-        f"在当前的加密货币市场中，{keyword}是一个备受关注的话题。",
-        "无论是新手投资者还是经验丰富的交易员，都需要对这一领域有深入的了解。",
-        "",
-        "## 操作建议",
-        "1. 始终保持仓位管理，不将全部资金投入单一交易",
-        "2. 设置止损位，控制单笔交易的风险敞口",
-        "3. 持续学习，跟踪市场最新动态",
-        "4. 使用可靠的交易平台和钱包服务",
-        "",
-        "## 相关资源",
-        "- 推荐交易平台: Binance, OKX, Bybit",
-        "- 学习资源: TradingView技术分析, CoinGecko市场数据",
-        "- 社区交流: Reddit r/CryptoCurrency, Twitter加密社区",
-    ])
-
-    # 生成内链
-    related = get_related_articles(filename, count=6)
-    related_html = ""
-    if related:
-        related_html = '<div class="related"><h2>📖 相关文章</h2><ul>\n'
-        for r in related:
-            r_title = TITLE_MAP.get(r['keyword'], r['keyword'])
-            related_html += f'<li><a href="{r["file"]}">{r_title}</a></li>\n'
-        related_html += '</ul></div>'
-
-    body_html = []
-    for line in body:
-        if not line:
-            body_html.append('<br>')
-        elif line.startswith('## '):
-            body_html.append(f'<h2>{line[3:]}</h2>')
-        elif line.startswith('- '):
-            body_html.append(f'<li>{line[2:]}</li>')
-        elif line[0].isdigit() and '. ' in line[:4]:
-            body_html.append(f'<li>{line}</li>')
-        else:
-            body_html.append(f'<p>{line}</p>')
-
-    html = f"""<!DOCTYPE html>
+ARTICLE_HEAD = """
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="_UJqwOqD7KQXT5DvneoA-kQzpIE4isR8apvX6sOF1Vo" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{title} - 专业的加密货币分析和交易指南">
-    <meta name="keywords" content="{keyword},加密货币,比特币,交易,投资">
-    <title>{title}</title>
+    <meta name="description" content="[{TITLE}] - 专业的加密货币分析和交易指南">
+    <meta name="keywords" content="{KEYWORD},加密货币,比特币,交易,投资">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={AD_CLIENT}" crossorigin="anonymous"></script>
+    <title>{TITLE}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background: #fafafa; }}
@@ -237,6 +85,7 @@ def generate_article(keyword, index):
         .related li {{ margin: 10px 0; }}
         .related a {{ color: #2a7de1; text-decoration: none; }}
         .related a:hover {{ text-decoration: underline; }}
+        .ad-container {{ text-align: center; margin: 30px 0; padding: 10px 0; min-height: 90px; }}
         nav {{ margin: 20px 0; }}
         nav a {{ color: #f0b90b; text-decoration: none; margin-right: 15px; }}
         footer {{ text-align: center; padding: 30px 0; color: #888; border-top: 1px solid #eee; margin-top: 40px; }}
@@ -244,135 +93,237 @@ def generate_article(keyword, index):
 </head>
 <body>
     <nav>
-        <a href="/">首页</a>
-        <a href="/sitemap.html">全部文章</a>
+        <a href="../index.html">首页</a>
+        <a href="../sitemap.html">全部文章</a>
     </nav>
-    
     <header>
-        <h1>{title}</h1>
-        <p class="meta">发布时间: {now} | 分类: 加密货币分析 | 阅读时间: 5分钟</p>
+        <h1>{TITLE}</h1>
+        <p class="meta">发布时间: {DATE} | 分类: 加密货币分析</p>
     </header>
-    
     <main>
-        {''.join(body_html)}
-        {related_html}
+        {BODY}
     </main>
-    
+    <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="{AD_CLIENT}"
+             data-ad-slot="{AD_SLOT}"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
+    </div>
     <div class="cta">
-        <p>📡 想要实时交易信号？</p>
-        <a href="/signal.html">了解 Q系统 智能交易信号服务 →</a>
+        <p>获取实时交易信号？</p>
+        <a href="../signal.html">了解 Q系统 智能交易信号服务</a>
     </div>
-    
     <div class="disclaimer">
-        *免责声明：本文仅供信息参考，不构成投资建议。加密货币投资存在高风险，请在充分了解风险后做出独立决策。
+        *免责声明：本文仅供信息参考，不构成投资建议。
     </div>
-    
     <footer>
-        <p>© 2026 CryptoInsight - 专业的加密货币分析平台</p>
+        <p>(c) 2026 CryptoInsight - 专业的加密货币分析平台</p>
     </footer>
 </body>
-</html>"""
+</html>
+"""
 
-    filepath = os.path.join(ARTICLES_DIR, filename)
+
+def render_article(keyword, date, title, body_lines, client, slot, related_html):
+    """用模板渲染文章HTML"""
+    body = []
+    for line in body_lines:
+        if not line:
+            body.append('<br>')
+        elif line.startswith('## '):
+            body.append('<h2>' + line[3:] + '</h2>')
+        elif line.startswith('- '):
+            body.append('<li>' + line[2:] + '</li>')
+        elif line[0].isdigit() and '. ' in line[:4]:
+            body.append('<li>' + line + '</li>')
+        else:
+            body.append('<p>' + line + '</p>')
+    body_html = ''.join(body) + related_html
+
+    tpl = ARTICLE_HEAD
+    tpl = tpl.replace('{TITLE}', title)
+    tpl = tpl.replace('{KEYWORD}', keyword)
+    tpl = tpl.replace('{DATE}', date)
+    tpl = tpl.replace('{AD_CLIENT}', client)
+    tpl = tpl.replace('{AD_SLOT}', slot)
+    tpl = tpl.replace('{BODY}', body_html)
+    return tpl
+
+
+def get_all_articles():
+    arts = []
+    if not os.path.exists(ARTICLES_DIR):
+        return arts
+    for f in sorted(os.listdir(ARTICLES_DIR)):
+        if f.endswith('.html') and f.startswith('article-'):
+            parts = f.split('-', 2)
+            if len(parts) >= 3:
+                kw = os.path.splitext(parts[2])[0]
+                arts.append({'file': f, 'keyword': kw})
+    return arts
+
+
+def get_related(current_file, count=5):
+    others = [a for a in get_all_articles() if a['file'] != current_file]
+    random.shuffle(others)
+    return others[:count]
+
+
+def generate_article(keyword, index):
+    now = datetime.now().strftime("%Y-%m-%d")
+    title = TITLE_MAP.get(keyword, keyword + " - 完整解析与指南")
+    filename = "article-{:03d}-{}.html".format(index, keyword.replace(' ', '-'))
+
+    content_map = {
+        "比特币还会涨吗": [
+            "## 市场背景",
+            "截至{}, 比特币(BTC)价格在经历周期波动后面临多重因素交织。".format(now),
+            "",
+            "## 技术面分析",
+            "从技术指标看BTC的200日均线呈现上行趋势MACD指标金叉信号已经出现。",
+            "RSI指标处于50-70区间表明市场处于健康的中性偏多状态。",
+        ],
+        "比特币ETF最新消息": [
+            "## 比特币ETF最新进展",
+            "截至{}比特币现货ETF市场持续壮大管理资产规模突破新高。".format(now),
+            "",
+            "## 主要ETF产品对比",
+            "BlackRock iShares Bitcoin Trust (IBIT): 管理资产规模最大日均交易量领先",
+            "Fidelity Wise Origin Bitcoin Fund (FBTC): 费用率最低的比特币ETF之一",
+            "Grayscale Bitcoin Trust (GBTC): 转型为ETF后资金流出压力缓解",
+            "",
+            "## 机构资金流入对价格的影响",
+            "比特币ETF获批后机构资金持续流入每净流入10亿美元BTC价格平均上涨3-5%。",
+        ],
+        "以太坊Layer2扩容方案": [
+            "## Layer2扩容方案概述",
+            "以太坊Layer2是提升网络吞吐量降低交易费用的关键技术。",
+            "",
+            "## Arbitrum",
+            "采用Optimistic Rollup技术EVM完全兼容生态丰富头部DeFi协议均已部署。",
+            "",
+            "## Optimism",
+            "OP Stack开源框架降低了构建L2的门槛Base等知名L2均基于OP Stack。",
+            "",
+            "## zkSync",
+            "采用ZK-Rollup技术零知识证明确保安全提款无需等待期。",
+        ],
+    }
+
+    body = content_map.get(keyword, [
+        "## " + keyword,
+        "本文深入探讨" + keyword + "相关信息帮助读者全面了解。",
+        "",
+        "## 核心要点",
+        "1. " + keyword + "的基础概念与运作机制",
+        "2. 当前市场趋势与最新发展",
+        "3. 实用操作指南与最佳实践",
+        "4. 风险评估与注意事项",
+        "",
+        "## 详细分析",
+        "在当前的加密货币市场中" + keyword + "是一个备受关注的话题。",
+        "无论是新手还是老手都需要对这一领域有深入理解。",
+    ])
+
+    related = get_related(filename, 6)
+    rel_html = ""
+    if related:
+        rel_html = '<div class="related"><h2>相关文章</h2><ul>'
+        for r in related:
+            rt = TITLE_MAP.get(r['keyword'], r['keyword'])
+            rel_html += '<li><a href="{}">{}</a></li>'.format(r['file'], rt)
+        rel_html += '</ul></div>'
+
+    html = render_article(keyword, now, title, body, ADSENSE_CLIENT, ADSENSE_SLOT_IN_ARTICLE, rel_html)
     os.makedirs(ARTICLES_DIR, exist_ok=True)
+    filepath = os.path.join(ARTICLES_DIR, filename)
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(html)
     return filename
 
 
 def generate_site():
-    """生成完整网站"""
     os.makedirs(ARTICLES_DIR, exist_ok=True)
-    
-    articles = []
+    arts = []
     for i, kw in enumerate(KEYWORDS, 1):
-        fname = generate_article(kw, i)
-        articles.append({'keyword': kw, 'file': fname})
-        print(f"  [{i}/{len(KEYWORDS)}] {kw}")
-    
-    # 生成首页
-    index_html = generate_index(articles)
+        fn = generate_article(kw, i)
+        arts.append({'keyword': kw, 'file': fn})
+        print("  [{}/{}] {}".format(i, len(KEYWORDS), kw))
+
+    idx_html = make_index(arts)
     with open(os.path.join(os.path.dirname(ARTICLES_DIR), 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(index_html)
-    
-    # 生成站点地图
-    sitemap = generate_sitemap(articles)
+        f.write(idx_html)
+
+    sm_html = make_sitemap(arts)
     with open(os.path.join(os.path.dirname(ARTICLES_DIR), 'sitemap.html'), 'w', encoding='utf-8') as f:
-        f.write(sitemap)
-    
-    # 生成XML Sitemap
-    sitemap_xml = generate_xml_sitemap(articles)
+        f.write(sm_html)
+
+    sm_xml = make_xml_sitemap(arts)
     with open(os.path.join(os.path.dirname(ARTICLES_DIR), 'sitemap.xml'), 'w', encoding='utf-8') as f:
-        f.write(sitemap_xml)
-    
-    print(f"\n✅ 网站已生成: {len(articles)}篇文章")
-    print(f"   首页: index.html")
-    print(f"   文章: articles/ ({len(articles)}篇)")
+        f.write(sm_xml)
+
+    print("\n网站已生成: {}篇文章".format(len(arts)))
 
 
-def generate_index(articles):
-    """生成首页"""
+def make_index(arts):
     links = '\n'.join(
-        f'<li><a href="articles/{a["file"]}">{TITLE_MAP.get(a["keyword"], a["keyword"])}</a></li>'
-        for a in articles
+        '<li><a href="articles/{}">{}</a></li>'.format(a['file'], TITLE_MAP.get(a['keyword'], a['keyword']))
+        for a in arts
     )
-    return f"""<!DOCTYPE html>
+    return """<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="_UJqwOqD7KQXT5DvneoA-kQzpIE4isR8apvX6sOF1Vo" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CryptoInsight - 加密货币专业分析</title>
     <meta name="description" content="CryptoInsight提供专业的加密货币分析、交易策略和市场洞察">
     <meta name="keywords" content="加密货币,比特币,以太坊,交易策略,投资指南">
     <link rel="canonical" href="https://mumu93git.github.io/crypto-insight/">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=""" + ADSENSE_CLIENT + """" crossorigin="anonymous"></script>
     <style>
-        * {{ margin:0; padding:0; box-sizing:border-box; }}
-        body {{ font-family:-apple-system,sans-serif; max-width:800px; margin:0 auto; padding:20px; background:#fafafa; }}
-        h1 {{ text-align:center; padding:30px; color:#1a1a1a; }}
-        ul {{ list-style:none; }}
-        li {{ padding:15px; margin:8px 0; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }}
-        a {{ color:#f0b90b; text-decoration:none; font-size:1.1em; }}
-        a:hover {{ text-decoration:underline; }}
-        .hero {{ background:linear-gradient(135deg,#1a1a2e,#16213e); color:white; padding:60px 20px; text-align:center; border-radius:16px; margin-bottom:30px; }}
-        .hero h1 {{ color:white; font-size:2.5em; }}
-        .hero p {{ font-size:1.2em; opacity:0.8; margin-top:10px; }}
-        .article-count {{ text-align:center; color:#888; margin-bottom:20px; }}
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:-apple-system,sans-serif; max-width:800px; margin:0 auto; padding:20px; background:#fafafa; }
+        h1 { text-align:center; padding:30px; color:#1a1a1a; }
+        ul { list-style:none; }
+        li { padding:15px; margin:8px 0; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+        a { color:#f0b90b; text-decoration:none; font-size:1.1em; }
+        a:hover { text-decoration:underline; }
+        .hero { background:linear-gradient(135deg,#1a1a2e,#16213e); color:white; padding:60px 20px; text-align:center; border-radius:16px; margin-bottom:30px; }
+        .hero h1 { color:white; font-size:2.5em; }
+        .hero p { font-size:1.2em; opacity:0.8; margin-top:10px; }
+        .article-count { text-align:center; color:#888; margin-bottom:20px; }
     </style>
 </head>
 <body>
     <div class="hero">
-        <h1>📊 CryptoInsight</h1>
+        <h1>CryptoInsight</h1>
         <p>专业的加密货币分析平台 | 深度研究 | 交易策略</p>
     </div>
-    <h2>📚 最新文章 ({len(articles)}篇)</h2>
-    <p class="article-count">持续更新中，涵盖比特币、以太坊、DeFi、NFT等热门话题</p>
-    <ul>{links}</ul>
+    <h2>最新文章 (""" + str(len(arts)) + """篇)</h2>
+    <p class="article-count">持续更新中涵盖比特币以太坊DeFi NFT等热门话题</p>
+    <ul>""" + links + """</ul>
 </body>
 </html>"""
 
 
-def generate_sitemap(articles):
-    """生成HTML站点地图"""
+def make_sitemap(arts):
     links = '\n'.join(
-        f'<li><a href="articles/{a["file"]}">{TITLE_MAP.get(a["keyword"], a["keyword"])}</a></li>'
-        for a in articles
+        '<li><a href="articles/{}">{}</a></li>'.format(a['file'], TITLE_MAP.get(a['keyword'], a['keyword']))
+        for a in arts
     )
-    return f"""<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>站点地图 - CryptoInsight</title></head>
-<body><h1>全部文章</h1><ul>{links}</ul></body></html>"""
+    return "<html><head><meta charset='UTF-8'><title>站点地图</title></head><body><h1>全部文章</h1><ul>" + links + "</ul></body></html>"
 
 
-def generate_xml_sitemap(articles):
-    """生成XML Sitemap供Google读取"""
-    urls = ''
+def make_xml_sitemap(arts):
     base = 'https://mumu93git.github.io/crypto-insight'
-    urls += f'<url><loc>{base}/</loc><priority>1.0</priority></url>\n'
-    for a in articles:
-        urls += f'<url><loc>{base}/articles/{a["file"]}</loc><priority>0.8</priority></url>\n'
-    return f'''<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{urls}
-</urlset>'''
+    urls = '  <url><loc>{}/</loc><priority>1.0</priority></url>\n'.format(base)
+    for a in arts:
+        urls += '  <url><loc>{}/articles/{}</loc><priority>0.8</priority></url>\n'.format(base, a['file'])
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + '</urlset>'
 
 
 if __name__ == '__main__':
