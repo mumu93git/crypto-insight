@@ -110,7 +110,7 @@ ARTICLE_HEAD = """
              data-ad-slot="{AD_SLOT}"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div class="cta">
         <p>获取实时交易信号？</p>
