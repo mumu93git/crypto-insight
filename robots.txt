@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mumu93git.github.io/crypto-insight/sitemap.xml
